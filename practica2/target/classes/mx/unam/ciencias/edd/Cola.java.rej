@@ -1,0 +1,45 @@
+***************
+*** 11,16 ****
+       */
+      @Override public String toString() {
+          // Aquí va su código.
+      }
+  
+      /**
+--- 11,23 ----
+       */
+      @Override public String toString() {
+          // Aquí va su código.
++         String cadena = "";
++         Nodo nodo = cabeza;
++         while (nodo != null){
++             cadena += nodo.elemento.toString() + ",";
++             nodo = nodo.siguiente;
++         }
++         return cadena;
+      }
+  
+      /**
+***************
+*** 21,25 ****
+       */
+      @Override public void mete(T elemento) {
+          // Aquí va su código.
+      }
+  }
+--- 28,42 ----
+       */
+      @Override public void mete(T elemento) {
+          // Aquí va su código.
++         if (elemento == null) throw new IllegalArgumentException("Elemento nulo");
++         Nodo nodo = new Nodo(elemento);
++         if (rabo == null){
++             cabeza = rabo = nodo;
++         }
++         else{
++             rabo.siguiente = nodo;
++             rabo = nodo;
++             nodo = rabo;
++         }
+      }
+  }

@@ -1,0 +1,650 @@
+***************
+*** 29,34 ****
+          /* Construye un nodo con un elemento. */
+          private Nodo(T elemento) {
+              // Aquí va su código.
+          }
+      }
+  
+--- 29,35 ----
+          /* Construye un nodo con un elemento. */
+          private Nodo(T elemento) {
+              // Aquí va su código.
++             this.elemento = elemento;
+          }
+      }
+  
+***************
+*** 42,77 ****
+          /* Construye un nuevo iterador. */
+          private Iterador() {
+              // Aquí va su código.
+          }
+  
+          /* Nos dice si hay un elemento siguiente. */
+          @Override public boolean hasNext() {
+              // Aquí va su código.
+          }
+  
+          /* Nos da el elemento siguiente. */
+          @Override public T next() {
+              // Aquí va su código.
+          }
+  
+          /* Nos dice si hay un elemento anterior. */
+          @Override public boolean hasPrevious() {
+              // Aquí va su código.
+          }
+  
+          /* Nos da el elemento anterior. */
+          @Override public T previous() {
+              // Aquí va su código.
+          }
+  
+          /* Mueve el iterador al inicio de la lista. */
+          @Override public void start() {
+              // Aquí va su código.
+          }
+  
+          /* Mueve el iterador al final de la lista. */
+          @Override public void end() {
+              // Aquí va su código.
+          }
+      }
+  
+--- 43,95 ----
+          /* Construye un nuevo iterador. */
+          private Iterador() {
+              // Aquí va su código.
++             start();
+          }
+  
+          /* Nos dice si hay un elemento siguiente. */
+          @Override public boolean hasNext() {
+              // Aquí va su código.
++             return siguiente != null;
+          }
+  
+          /* Nos da el elemento siguiente. */
+          @Override public T next() {
+              // Aquí va su código.
++             if (siguiente == null) 
++                 throw new NoSuchElementException("No hay siguiente elemento");
++             anterior = siguiente;
++             siguiente = siguiente.siguiente;
++             return anterior.elemento;
+          }
+  
+          /* Nos dice si hay un elemento anterior. */
+          @Override public boolean hasPrevious() {
+              // Aquí va su código.
++             return anterior != null;
+          }
+  
+          /* Nos da el elemento anterior. */
+          @Override public T previous() {
+              // Aquí va su código.
++             if (anterior == null) 
++                 throw new NoSuchElementException("No hay elemento anterior");
++             siguiente = anterior;
++             anterior = anterior.anterior;
++             return siguiente.elemento;
+          }
+  
+          /* Mueve el iterador al inicio de la lista. */
+          @Override public void start() {
+              // Aquí va su código.
++             anterior = null;
++             siguiente = cabeza;
+          }
+  
+          /* Mueve el iterador al final de la lista. */
+          @Override public void end() {
+              // Aquí va su código.
++             anterior = rabo;
++             siguiente = null;
+          }
+      }
+  
+***************
+*** 89,94 ****
+       */
+      public int getLongitud() {
+          // Aquí va su código.
+      }
+  
+      /**
+--- 107,113 ----
+       */
+      public int getLongitud() {
+          // Aquí va su código.
++         return longitud;
+      }
+  
+      /**
+***************
+*** 98,103 ****
+       */
+      @Override public int getElementos() {
+          // Aquí va su código.
+      }
+  
+      /**
+--- 117,123 ----
+       */
+      @Override public int getElementos() {
+          // Aquí va su código.
++         return getLongitud();
+      }
+  
+      /**
+***************
+*** 107,112 ****
+       */
+      @Override public boolean esVacia() {
+          // Aquí va su código.
+      }
+  
+      /**
+--- 127,133 ----
+       */
+      @Override public boolean esVacia() {
+          // Aquí va su código.
++         return cabeza == null;
+      }
+  
+      /**
+***************
+*** 119,124 ****
+       */
+      @Override public void agrega(T elemento) {
+          // Aquí va su código.
+      }
+  
+      /**
+--- 140,156 ----
+       */
+      @Override public void agrega(T elemento) {
+          // Aquí va su código.
++         if (elemento == null) throw new IllegalArgumentException("Elemento nulo"); 
++         Nodo n = new Nodo(elemento);
++         if (esVacia()){
++             cabeza = rabo = n;
++         }
++         else {
++             rabo.siguiente = n;
++             n.anterior = rabo;
++             rabo = n;
++         }
++         longitud++;
+      }
+  
+      /**
+***************
+*** 130,135 ****
+       */
+      public void agregaFinal(T elemento) {
+          // Aquí va su código.
+      }
+  
+      /**
+--- 162,168 ----
+       */
+      public void agregaFinal(T elemento) {
+          // Aquí va su código.
++         agrega(elemento);
+      }
+  
+      /**
+***************
+*** 141,146 ****
+       */
+      public void agregaInicio(T elemento) {
+          // Aquí va su código.
+      }
+  
+      /**
+--- 174,190 ----
+       */
+      public void agregaInicio(T elemento) {
+          // Aquí va su código.
++         if (elemento == null) throw new IllegalArgumentException("Elemento nulo");
++         Nodo n = new Nodo(elemento);
++         if (esVacia()){
++             cabeza = rabo = n;
++         }
++         else{
++             cabeza.anterior = n;
++             n.siguiente = cabeza;
++             cabeza = n;
++         }
++         longitud++;
+      }
+  
+      /**
+***************
+*** 160,165 ****
+       */
+      public void inserta(int i, T elemento) {
+          // Aquí va su código.
+      }
+  
+      /**
+--- 204,243 ----
+       */
+      public void inserta(int i, T elemento) {
+          // Aquí va su código.
++         if (elemento == null) throw new IllegalArgumentException("Elemento nulo");
++         if (i < 1) {
++             agregaInicio(elemento);
++             return;
++         }
++         if (i > longitud-1) {
++             agrega(elemento);
++             return;
++         }
++         longitud ++;
++         Nodo nodo = new Nodo(elemento);
++         Nodo nodoAux = buscaIndice(i);
++         nodo.anterior = nodoAux.anterior;
++         nodo.siguiente = nodoAux;
++         nodoAux.anterior.siguiente = nodo;
++         nodoAux.anterior = nodo; 
++     }
++ 
++     private Nodo buscaIndice(int i){
++         int contador = 0;
++         Nodo nodo = cabeza;
++         while(contador++ != i){
++             nodo = nodo.siguiente;
++         }
++         return nodo;
++     }
++     private Nodo buscaNodo(T elemento){
++         Nodo nodo = cabeza;
++         while(nodo != null){
++             if(nodo.elemento.equals(elemento))
++                 return nodo;
++             nodo = nodo.siguiente;
++         }
++         return null;
+      }
+  
+      /**
+***************
+*** 169,174 ****
+       */
+      @Override public void elimina(T elemento) {
+          // Aquí va su código.
+      }
+  
+      /**
+--- 247,273 ----
+       */
+      @Override public void elimina(T elemento) {
+          // Aquí va su código.
++         Nodo eliminar = buscaNodo(elemento);
++         if (eliminar == null){ 
++             return;
++         }
++         longitud--;
++         if(cabeza == rabo){
++             cabeza = null;
++             rabo = null;
++         }
++         else if(eliminar == cabeza){
++             eliminar.siguiente.anterior = null;
++             cabeza = eliminar.siguiente;
++         }
++         else if(eliminar == rabo){
++             eliminar.anterior.siguiente = null;
++             rabo = eliminar.anterior;
++         }
++         else{
++             eliminar.anterior.siguiente = eliminar.siguiente;
++             eliminar.siguiente.anterior = eliminar.anterior;
++         }
+      }
+  
+      /**
+***************
+*** 178,183 ****
+       */
+      public T eliminaPrimero() {
+          // Aquí va su código.
+      }
+  
+      /**
+--- 277,293 ----
+       */
+      public T eliminaPrimero() {
+          // Aquí va su código.
++         if (esVacia()) throw new NoSuchElementException("Lista vacía");
++         T t = cabeza.elemento;
++         cabeza = cabeza.siguiente;
++         if(cabeza != null){
++             cabeza.anterior = null;
++         }
++         else{
++             rabo = null;
++         }
++         longitud--;
++         return t;
+      }
+  
+      /**
+***************
+*** 187,192 ****
+       */
+      public T eliminaUltimo() {
+          // Aquí va su código.
+      }
+  
+      /**
+--- 297,313 ----
+       */
+      public T eliminaUltimo() {
+          // Aquí va su código.
++         if(esVacia()) throw new NoSuchElementException("Lista vacía");
++         T t = rabo.elemento;
++         rabo = rabo.anterior;
++         if(rabo != null){
++             rabo.siguiente = null;
++         }
++         else{
++             cabeza = null;
++         }
++         longitud--;
++         return t;
+      }
+  
+      /**
+***************
+*** 197,202 ****
+       */
+      @Override public boolean contiene(T elemento) {
+          // Aquí va su código.
+      }
+  
+      /**
+--- 318,324 ----
+       */
+      @Override public boolean contiene(T elemento) {
+          // Aquí va su código.
++         return buscaNodo(elemento) != null;
+      }
+  
+      /**
+***************
+*** 205,210 ****
+       */
+      public Lista<T> reversa() {
+          // Aquí va su código.
+      }
+  
+      /**
+--- 327,339 ----
+       */
+      public Lista<T> reversa() {
+          // Aquí va su código.
++         Lista<T> listaReversa = new Lista<T>();
++         Nodo nodo = cabeza;
++         while(nodo != null){
++             listaReversa.agregaInicio(nodo.elemento);
++             nodo = nodo.siguiente;
++         }
++         return listaReversa;
+      }
+  
+      /**
+***************
+*** 214,219 ****
+       */
+      public Lista<T> copia() {
+          // Aquí va su código.
+      }
+  
+      /**
+--- 343,355 ----
+       */
+      public Lista<T> copia() {
+          // Aquí va su código.
++         Lista<T> listaCopia = new Lista<T>();
++         Nodo nodo = cabeza;
++         while(nodo != null){
++             listaCopia.agrega(nodo.elemento);
++             nodo = nodo.siguiente;
++         }
++         return listaCopia;
+      }
+  
+      /**
+***************
+*** 221,226 ****
+       */
+      @Override public void limpia() {
+          // Aquí va su código.
+      }
+  
+      /**
+--- 357,364 ----
+       */
+      @Override public void limpia() {
+          // Aquí va su código.
++         cabeza = rabo = null;
++         longitud = 0;
+      }
+  
+      /**
+***************
+*** 230,235 ****
+       */
+      public T getPrimero() {
+          // Aquí va su código.
+      }
+  
+      /**
+--- 368,377 ----
+       */
+      public T getPrimero() {
+          // Aquí va su código.
++         if (esVacia())
++             throw new NoSuchElementException("Lista vacía");
++         T t = cabeza.elemento;
++         return t;
+      }
+  
+      /**
+***************
+*** 239,244 ****
+       */
+      public T getUltimo() {
+          // Aquí va su código.
+      }
+  
+      /**
+--- 381,390 ----
+       */
+      public T getUltimo() {
+          // Aquí va su código.
++         if (esVacia())
++             throw new NoSuchElementException("Lista vacía");
++         T t = rabo.elemento;
++         return t;
+      }
+  
+      /**
+***************
+*** 250,255 ****
+       */
+      public T get(int i) {
+          // Aquí va su código.
+      }
+  
+      /**
+--- 396,404 ----
+       */
+      public T get(int i) {
+          // Aquí va su código.
++         if (i < 0 || i >= longitud) throw new ExcepcionIndiceInvalido("Índice inválido");
++         Nodo busca = buscaIndice(i);
++         return busca.elemento;
+      }
+  
+      /**
+***************
+*** 260,265 ****
+       */
+      public int indiceDe(T elemento) {
+          // Aquí va su código.
+      }
+  
+      /**
+--- 409,423 ----
+       */
+      public int indiceDe(T elemento) {
+          // Aquí va su código.
++         int contador = 0;
++         Nodo nodo = cabeza;
++         while (nodo != null){
++             if (nodo.elemento.equals(elemento)) 
++                 return contador;
++             contador++;
++             nodo = nodo.siguiente;
++         }
++         return -1;
+      }
+  
+      /**
+***************
+*** 268,273 ****
+       */
+      @Override public String toString() {
+          // Aquí va su código.
+      }
+  
+      /**
+--- 426,442 ----
+       */
+      @Override public String toString() {
+          // Aquí va su código.
++         Nodo nodo = cabeza;
++         String cadena = "[";
++         if(nodo != null){
++             while(nodo.siguiente != null){
++                 cadena += String.format("%s, ", nodo.elemento);
++                 nodo = nodo.siguiente;
++             }
++             cadena += String.format("%s", nodo.elemento);
++         }
++         cadena += "]";
++         return cadena;
+      }
+  
+      /**
+***************
+*** 281,286 ****
+              return false;
+          @SuppressWarnings("unchecked") Lista<T> lista = (Lista<T>)objeto;
+          // Aquí va su código.
+      }
+  
+      /**
+--- 450,467 ----
+              return false;
+          @SuppressWarnings("unchecked") Lista<T> lista = (Lista<T>)objeto;
+          // Aquí va su código.
++         if (longitud != lista.longitud) 
++             return false;
++         Nodo nodo = cabeza;
++         Nodo nodoLista = lista.cabeza;
++         while(nodo != null){
++             if (!nodo.elemento.equals(nodoLista.elemento)) 
++                 return false;
++             nodo = nodo.siguiente;
++             nodoLista = nodoLista.siguiente;    
++         }
++         return true;
++ 
+      }
+  
+      /**
+***************
+*** 309,315 ****
+       */
+      public Lista<T> mergeSort(Comparator<T> comparador) {
+          // Aquí va su código.
+      }
+  
+      /**
+       * Regresa una copia de la lista recibida, pero ordenada. La lista recibida
+--- 490,538 ----
+       */
+      public Lista<T> mergeSort(Comparator<T> comparador) {
+          // Aquí va su código.
++         if (longitud <= 1)
++             return copia();
++ 
++         int mitad = longitud / 2;
++         Lista<T> izquierda = copiaLista(0, mitad).mergeSort(comparador);
++         Lista<T> derecha = copiaLista(mitad, longitud).mergeSort(comparador);
++ 
++         Lista<T> l = new Lista<T>();
++         Nodo i = izquierda.cabeza;
++         Nodo d = derecha.cabeza;
++ 
++         while (i != null && d != null) {
++             if (comparador.compare(i.elemento, d.elemento) <= 0) {
++                 l.agrega(i.elemento);
++                 i = i.siguiente;
++             } else {
++                 l.agrega(d.elemento);
++                 d = d.siguiente;
++             }
++         }
++         while (i != null) {
++             l.agrega(i.elemento);
++             i = i.siguiente;
++         }
++         while (d != null) {
++             l.agrega(d.elemento);
++             d = d.siguiente;
++         }
++ 
++         return l;
+      }
++     private Lista<T> copiaLista(int i, int j) {
++         Lista<T> lista = new Lista<T>();
++         Nodo nodo = buscaIndice(i);
++ 
++         while (nodo != null && i++ < j) {
++             lista.agrega(nodo.elemento);
++             nodo = nodo.siguiente;
++         }
++ 
++         return lista;
++     }
++ 
+  
+      /**
+       * Regresa una copia de la lista recibida, pero ordenada. La lista recibida
+***************
+*** 334,339 ****
+       */
+      public boolean busquedaLineal(T elemento, Comparator<T> comparador) {
+          // Aquí va su código.
+      }
+  
+      /**
+--- 557,567 ----
+       */
+      public boolean busquedaLineal(T elemento, Comparator<T> comparador) {
+          // Aquí va su código.
++         Nodo nodo = cabeza;
++         while (nodo != null && comparador.compare(nodo.elemento, elemento) < 0){
++             nodo = nodo.siguiente;
++         }
++         return nodo != null && comparador.compare(nodo.elemento, elemento) == 0;
+      }
+  
+      /**

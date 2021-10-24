@@ -1,0 +1,96 @@
+***************
+*** 23,28 ****
+           */
+          public Nodo(T elemento) {
+              // Aquí va su código.
+          }
+      }
+  
+--- 23,29 ----
+           */
+          public Nodo(T elemento) {
+              // Aquí va su código.
++             this.elemento = elemento;
+          }
+      }
+  
+***************
+*** 44,49 ****
+       */
+      public T saca() {
+          // Aquí va su código.
+      }
+  
+      /**
+--- 45,57 ----
+       */
+      public T saca() {
+          // Aquí va su código.
++         if (cabeza == null) throw new NoSuchElementException("Estructura vacía");
++         Nodo nodo = cabeza;
++         cabeza = cabeza.siguiente;
++         if (cabeza == null){
++             cabeza = rabo = null;
++         }
++         return nodo.elemento;
+      }
+  
+      /**
+***************
+*** 54,59 ****
+       */
+      public T mira() {
+          // Aquí va su código.
+      }
+  
+      /**
+--- 62,71 ----
+       */
+      public T mira() {
+          // Aquí va su código.
++         if (cabeza == null) throw new NoSuchElementException("Estructura vacía");
++         else{
++             return cabeza.elemento;
++         }
+      }
+  
+      /**
+***************
+*** 63,68 ****
+       */
+      public boolean esVacia() {
+          // Aquí va su código.
+      }
+  
+      /**
+--- 75,81 ----
+       */
+      public boolean esVacia() {
+          // Aquí va su código.
++         return cabeza == null;
+      }
+  
+      /**
+***************
+*** 77,81 ****
+              return false;
+          @SuppressWarnings("unchecked") MeteSaca<T> m = (MeteSaca<T>)object;
+          // Aquí va su código.
+      }
+  }
+--- 90,104 ----
+              return false;
+          @SuppressWarnings("unchecked") MeteSaca<T> m = (MeteSaca<T>)object;
+          // Aquí va su código.
++         Nodo nodo = cabeza;
++         Nodo nodo2 = m.cabeza;
++         while (nodo != null){
++             if (nodo2 == null || !nodo.elemento.equals(nodo2.elemento)){
++                 return false;
++             }
++             nodo = nodo.siguiente;
++             nodo2 = nodo2.siguiente;
++         }
++         return true;
+      }
+  }
